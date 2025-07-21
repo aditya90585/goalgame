@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { handleFlip } from '../../utils/handleFlip';
-import { togglehowtoplay, toggleMenu, revealedOne, revealAll, togglefooter, togglemain, SetbetState, selectAutoOne, Setfieldroundselector } from '../../features/mines/mineSlices'
+import { calculateSpribeMultiplier } from '../../utils/multiplier';
+import { togglehowtoplay, toggleMenu, revealedOne, cashOutbetamount, cashOutAmt, setCashoutNotification, clearCashoutNotification, revealAll, togglefooter, togglemain, SetbetState, selectAutoOne, Setfieldroundselector } from '../../features/mines/mineSlices'
 import { FaStar } from "react-icons/fa";
 import { PiBombFill } from "react-icons/pi";
 
 const Mainboxes = () => {
     const dispatch = useDispatch()
     const mainselector = useSelector(state => state.disablemain)
+    const betamount = useSelector(state => state.betamount)
     const autogameSelector = useSelector(state => state.autoGame)
     const autogamingstate = useSelector(state => state.autogamingstate)
     const boxes = useSelector(state => state.boxes)
@@ -20,6 +22,8 @@ const Mainboxes = () => {
     const autorevealState = useSelector(state => state.autorevealState)
     const betState = useSelector(state => state.betState)
     const fieldroundSelector = useSelector(state => state.fieldroundSelector)
+    const fieldCountcolumn = useSelector(state => state.fieldCountcolumn)
+    const multiplier = () => calculateSpribeMultiplier(fieldroundSelector, fieldCountcolumn)
 
     let safeClickCountauto = useMemo(() => {
         return selectAutoBoxes.filter(v => v === true).length;
@@ -56,7 +60,29 @@ const Mainboxes = () => {
                 if (soundSelector) {
                     audio.play()
                 }
-                dispatch(Setfieldroundselector(fieldroundSelector + 1))
+                if ((fieldroundSelector + 1) == fieldCountcolumn) {
+                    dispatch(Setfieldroundselector(fieldroundSelector + 1))
+                    const currentmultiplier = multiplier()
+                    const payout = parseFloat(betamount) * currentmultiplier;
+                    dispatch(cashOutbetamount(payout))
+                    dispatch(setCashoutNotification(payout))
+                    dispatch(SetbetState(!betState))
+                    dispatch(togglefooter(false))
+                    dispatch(togglemain(true))
+
+                    let minestapsound = "/sounds/success-alert.mp3"
+                    let audio = new Audio(minestapsound)
+                    if (soundSelector) {
+                        audio.play()
+                    }
+                    setTimeout(() => {
+                        dispatch(clearCashoutNotification())
+                    }, 2000);
+
+                } else {
+                    dispatch(Setfieldroundselector(fieldroundSelector + 1))
+                }
+
             }
 
         }
@@ -78,7 +104,7 @@ const Mainboxes = () => {
 
 
     return (
-        <div className={`md:w-2/4 mt-4 md:h-full  h-70 w-full bg-[#417615] rounded-2xl flex justify-center md:gap-x-1 gap-x-1 items-center ${((mainselector && autogameSelector == false) || autogamingstate) ? "disable-main" : ""}`}>
+        <div className={`md:w-2/4 w-[90%] mt-4 md:h-full  h-70  bg-[#417615] rounded-2xl flex justify-center md:gap-x-1 gap-x-1 items-center ${((mainselector && autogameSelector == false) || autogamingstate) ? "disable-main" : ""}`}>
             {boxes.map((box1, index1) => {
                 return <div key={index1} className={`h-full w-full flex justify-center items-center flex-col gap-x-1 gap-y-2   `}>
 
@@ -90,7 +116,7 @@ const Mainboxes = () => {
                      ${(footerselector && autogameSelector == false) ? (fieldroundSelector == index1) ? "grad-light" : "grad" : "grad"}
                             `} >
 
-                            {(autogameSelector == false || autorevealState) ? (revealed[index1][index]) ? box == "safe" ? <div className={`h-full w-full flex  justify-center items-center`}><img src='/images/football.png' className='text-[#FEF4E0] bg-white rounded-full h-5/10 w-5/10 aspect-square ' /></div> : <div className={`h-full w-full flex  justify-center items-center `}><PiBombFill className=' h-7/10 w-7/10 drop-shadow-[3px_3px_2px_black]' /></div> : <div></div> : <div></div>}
+                            {(autogameSelector == false || autorevealState) ? (revealed[index1][index]) ? box == "safe" ? <div className={`h-full w-full flex  justify-center items-center`}><img src='/images/football.png' className='text-[#FEF4E0] bg-white rounded-full w-5/10 aspect-square ' /></div> : <div className={`h-full w-full flex  justify-center items-center `}><PiBombFill className=' h-7/10 w-7/10 drop-shadow-[3px_3px_2px_black]' /></div> : <div></div> : <div></div>}
                             {(autogameSelector && autorevealState == false) ? (selectAutoBoxes[index]) ? <div className={`h-7 w-7 rounded-full gradcircle-auto `}></div> : <div className={`h-7 w-7 rounded-full gradcircle `}></div> : <div></div>}
                         </div>
                     })}

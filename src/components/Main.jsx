@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { handleFlip } from '../utils/handleFlip'
 import { useSelector, useDispatch } from 'react-redux'
-import { setMultiplier, betAmt, SetbetState, SetautorevealState, Setautogamingstate, toggleAutoGame, toggleMenu, togglehowtoplay, revealedFalse, togglefooter, togglemain, revealedOne, revealAll, changeMines, boxesSet, SetselectAutoBoxes, selectAutoOne, Setfieldroundselector } from '../features/mines/mineSlices'
+import { setMultiplier, betAmt, SetbetState, SetautorevealState, cashOutbetamount, setCashoutNotification, clearCashoutNotification, Setautogamingstate, toggleAutoGame, toggleMenu, togglehowtoplay, revealedFalse, togglefooter, togglemain, revealedOne, revealAll, changeMines, boxesSet, SetselectAutoBoxes, selectAutoOne, Setfieldroundselector } from '../features/mines/mineSlices'
 import { calculateSpribeMultiplier } from '../utils/multiplier'
 import { MdOutlineAutorenew } from "react-icons/md";
 import Mainboxes from './Maincomponents/Mainboxes'
@@ -9,6 +9,7 @@ import Mineschanger from './Maincomponents/Mineschanger'
 
 
 const Main = () => {
+  const betamount = useSelector(state => state.betamount)
   const fieldCount = useSelector(state => state.fieldCount)
   const fieldCountcolumn = useSelector(state => state.fieldCountcolumn)
   const fieldroundSelector = useSelector(state => state.fieldroundSelector)
@@ -25,6 +26,7 @@ const Main = () => {
   const mainselector = useSelector(state => state.disablemain)
   const footerselector = useSelector(state => state.disablefooter)
   const flipTrigger = useSelector(state => state.flipTrigger)
+  const multiplier2 = () => calculateSpribeMultiplier(fieldroundSelector, fieldCountcolumn)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -89,26 +91,76 @@ const Main = () => {
       if (revealed[fieldroundSelector][random] == false) {
 
 
-        dispatch(revealedOne({index:fieldroundSelector,index1:random}))
-        dispatch(Setfieldroundselector(fieldroundSelector+1))
-        if (boxes[random] == "mines") {
+        dispatch(revealedOne({ index: fieldroundSelector, index1: random }))
+
+      
+
+        if (boxes[fieldroundSelector][random] == "mines") {
           let minestapsound = "/sounds/lose.mp3"
           let audio = new Audio(minestapsound)
           if (soundSelector) {
             audio.play()
           }
+
+          // const revealall = Array(5 * 5).fill("true")
+          // setRevealed(revealall)
+
           dispatch(revealAll())
-          handleFlip(dispatch)
+          // handleFlip(dispatch)
           dispatch(togglefooter(false))
           dispatch(togglemain(true))
           dispatch(SetbetState(!betState))
+
+
         } else {
           let minestapsound = "/sounds/star-click.mp3"
           let audio = new Audio(minestapsound)
           if (soundSelector) {
             audio.play()
           }
+          if ((fieldroundSelector + 1) == fieldCountcolumn) {
+            dispatch(Setfieldroundselector(fieldroundSelector + 1))
+            const currentmultiplier = multiplier2()
+            const payout = parseFloat(betamount) * currentmultiplier;
+            dispatch(cashOutbetamount(payout))
+            dispatch(setCashoutNotification(payout))
+            dispatch(SetbetState(!betState))
+            dispatch(togglefooter(false))
+            dispatch(togglemain(true))
+            dispatch(revealAll())
+
+            let minestapsound = "/sounds/success-alert.mp3"
+            let audio = new Audio(minestapsound)
+            if (soundSelector) {
+              audio.play()
+            }
+            setTimeout(() => {
+              dispatch(clearCashoutNotification())
+            }, 2000);
+
+          } else {
+            dispatch(Setfieldroundselector(fieldroundSelector + 1))
+          }
+
         }
+        // if (boxes[random] == "mines") {
+        //   let minestapsound = "/sounds/lose.mp3"
+        //   let audio = new Audio(minestapsound)
+        //   if (soundSelector) {
+        //     audio.play()
+        //   }
+        //   dispatch(revealAll())
+        //   handleFlip(dispatch)
+        //   dispatch(togglefooter(false))
+        //   dispatch(togglemain(true))
+        //   dispatch(SetbetState(!betState))
+        // } else {
+        //   let minestapsound = "/sounds/star-click.mp3"
+        //   let audio = new Audio(minestapsound)
+        //   if (soundSelector) {
+        //     audio.play()
+        //   }
+        // }
       }
       else {
         selectRandom()
@@ -160,7 +212,7 @@ const Main = () => {
       dispatch(setMultiplier(newMultiplier));
     }
 
-  }, [safeClickCount, fieldCount,fieldroundSelector,fieldCountcolumn, flipTrigger, safeClickCountauto])
+  }, [safeClickCount, fieldCount, fieldroundSelector, fieldCountcolumn, flipTrigger, safeClickCountauto])
 
 
   return (

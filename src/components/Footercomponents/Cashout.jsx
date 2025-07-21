@@ -26,7 +26,6 @@ const Cashout = () => {
         dispatch(toggleMenu(false))
         if (fieldroundSelector > 0) {
             const currentmultiplier = multiplier()
-            console.log(currentmultiplier)
             const payout = parseFloat(betamount) * currentmultiplier;
             dispatch(cashOutbetamount(payout))
             dispatch(revealAll())
