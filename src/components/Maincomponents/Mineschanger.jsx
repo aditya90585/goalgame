@@ -66,7 +66,7 @@ const Mineschanger = () => {
 
             <div className=' bg-[#335415] h-6 rounded-2xl flex justify-between items-center'>
                 <div className='flex items-center h-5 mx-1 '>
-                    <div onClick={togglemineselector} className='bg-[#3E7315] cursor-pointer rounded-xl w-45 h-5 text-white flex justify-center items-center active:translate-x-0.2 active:translate-y-0.5  transition-transform duration-150 inset-shadow-[0.8px_0.6px_0px_#488112] shadow-[1px_1px_1px_rgb(0,0,0)]' >
+                    <div onClick={togglemineselector} className='bg-[#3E7315] cursor-pointer rounded-xl w-45  h-5 text-white flex justify-center items-center active:translate-x-0.2 active:translate-y-0.5  transition-transform duration-150 inset-shadow-[0.8px_0.6px_0px_#488112] shadow-[1px_1px_1px_rgb(0,0,0)]' >
                         <span className='w-8/10 flex justify-center items-center ml-3'> Field : {fieldCount}</span>  <FaChevronDown className='w-2/10 text-xs' />
                     </div>
                     <div className={`h-fit w-40 bg-[#1C3016] fixed md:top-19 top-9 z-10 rounded-xl ${togglemine ? "hidden" : ""}`}>
@@ -77,7 +77,7 @@ const Mineschanger = () => {
 
                     </div>
                 </div>
-                <div className='bg-[#FFC107] rounded-xl px-8 mx-px text-sm  h-5'>Next: {multiplier.toFixed(2)}X</div>
+                <div className='bg-[#FFC107] rounded-xl mx-px w-40 flex justify-center items-center text-sm h-5'>Next: {multiplier.toFixed(2)}X</div>
             </div>
         </div>
     )

@@ -45,11 +45,11 @@ const Betcomponent = () => {
          newBoxes = Array.from({ length: 10 }, () => Array(5).fill("safe"));
    
          let index = 0;
-        //  while (index < 10) {
-        //    const random = Math.floor(Math.random() * 5);
-        //    newBoxes[index][random] = "mines";
-        //    index++;
-        //  }
+         while (index < 10) {
+           const random = Math.floor(Math.random() * 5);
+           newBoxes[index][random] = "mines";
+           index++;
+         }
        }
    
 
