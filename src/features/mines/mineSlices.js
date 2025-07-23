@@ -7,7 +7,7 @@ const initialState = {
   revealed: [],
   betamount: "10.00",
   fieldCount: "medium",
-  fieldCountcolumn:7,
+  fieldCountcolumn: 7,
   fieldroundSelector: 0,
 
   cashOutamount: 0,
@@ -72,7 +72,7 @@ export const minesSlices = createSlice({
     },
     revealAll: (state, action) => {
       let revealall
-        if (state.fieldCount === "small") {
+      if (state.fieldCount === "small") {
         revealall = Array.from({ length: 4 }, () => Array(3).fill(true));
       } else if (state.fieldCount === "medium") {
         revealall = Array.from({ length: 7 }, () => Array(4).fill(true));
@@ -169,20 +169,28 @@ export const minesSlices = createSlice({
       state.autoGame = action.payload
     },
     SetselectAutoBoxes: (state, action) => {
-      const falsearray = Array(5 * 5).fill(false)
+      let falsearray
+      if (state.fieldCount === "small") {
+        falsearray = Array.from({ length: 4 }, () => Array(3).fill(false));
+      } else if (state.fieldCount === "medium") {
+        falsearray = Array.from({ length: 7 }, () => Array(4).fill(false));
+      } else if (state.fieldCount === "large") {
+        falsearray = Array.from({ length: 10 }, () => Array(5).fill(false));
+      }
       state.selectAutoBoxes = falsearray
     },
     selectAutoOne: (state, action) => {
       const newSelect = state.selectAutoBoxes
-      let safeClickCountauto = state.selectAutoBoxes.filter(v => v === true).length;
-      if (25 - state.minesCount > safeClickCountauto) {
-        newSelect[action.payload] = !newSelect[action.payload]
-        state.selectAutoBoxes = newSelect
-      } else {
-        newSelect[action.payload] = false
-        state.selectAutoBoxes = newSelect
-      }
-
+      // let safeClickCountauto = state.selectAutoBoxes.filter(v => v === true).length;
+      // if (25 - state.minesCount > safeClickCountauto) {
+      //   newSelect[action.payload] = !newSelect[action.payload]
+      //   state.selectAutoBoxes = newSelect
+      // } else {
+      //   newSelect[action.payload] = false
+      //   state.selectAutoBoxes = newSelect
+      // }
+      newSelect[action.payload.index][action.payload.index1] = true
+      state.selectAutoBoxes = newSelect
 
     },
     toggleStartAutoGameSelector: (state, action) => {
@@ -224,7 +232,7 @@ export const minesSlices = createSlice({
     Setfieldroundselector: (state, action) => {
       state.fieldroundSelector = action.payload
     },
-    SetfieldCountcolumn:(state,action)=>{
+    SetfieldCountcolumn: (state, action) => {
       state.fieldCountcolumn = action.payload
     }
 
@@ -232,6 +240,6 @@ export const minesSlices = createSlice({
 })
 
 
-export const { SetfeeeBetsSelector, SetfieldCountcolumn,Setfieldroundselector, changeField, SetGamesSelector, SetGameLimitsSelector, SetGamerulesSelector, SetBethistorySelector, toggleAutoGame, SetstopGamestate, SetroundLeft, Setautogamingstate, SetautorevealState, SetbetState, SetautoGameRound, toggleStartAutoGameSelector, selectAutoOne, SetselectAutoBoxes, togglehowtoplay, toggleSound, boxesSet, triggerFlip, toggleMenu, resetFlip, setNavcashout, changefixbettomin, clearCashoutNotification, setCashoutNotification, addfixBet, setMultiplier, setcashOutamount, cashOutbetamount, changeMines, fixBets, betAmt, cashOutAmt, togglemain, togglefooter, revealedFalse, revealedOne, revealAll, changebetValue, changebetFix } = minesSlices.actions
+export const { SetfeeeBetsSelector, SetfieldCountcolumn, Setfieldroundselector, changeField, SetGamesSelector, SetGameLimitsSelector, SetGamerulesSelector, SetBethistorySelector, toggleAutoGame, SetstopGamestate, SetroundLeft, Setautogamingstate, SetautorevealState, SetbetState, SetautoGameRound, toggleStartAutoGameSelector, selectAutoOne, SetselectAutoBoxes, togglehowtoplay, toggleSound, boxesSet, triggerFlip, toggleMenu, resetFlip, setNavcashout, changefixbettomin, clearCashoutNotification, setCashoutNotification, addfixBet, setMultiplier, setcashOutamount, cashOutbetamount, changeMines, fixBets, betAmt, cashOutAmt, togglemain, togglefooter, revealedFalse, revealedOne, revealAll, changebetValue, changebetFix } = minesSlices.actions
 
 export const minesReducers = minesSlices.reducer

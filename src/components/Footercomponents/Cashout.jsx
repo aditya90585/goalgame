@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { calculateSpribeMultiplier } from '../../utils/multiplier'
 import { handleFlip } from '../../utils/handleFlip'
-import { togglehowtoplay, toggleMenu, cashOutbetamount, revealAll, togglefooter, togglemain, clearCashoutNotification, setCashoutNotification, SetbetState } from '../../features/mines/mineSlices'
+import { togglehowtoplay, toggleMenu, cashOutbetamount, revealAll, togglefooter, togglemain, clearCashoutNotification, setCashoutNotification, SetbetState, setcashOutamount } from '../../features/mines/mineSlices'
 import { current } from '@reduxjs/toolkit'
 
 
@@ -18,7 +18,7 @@ const Cashout = () => {
     // const multiplier = () => calculateSpribeMultiplier(safeClicks, minesCount)
     const fieldroundSelector = useSelector(state => state.fieldroundSelector)
     const fieldCountcolumn = useSelector(state => state.fieldCountcolumn)
-    const multiplier = () => calculateSpribeMultiplier( fieldroundSelector ,fieldCountcolumn)
+    const multiplier = () => calculateSpribeMultiplier(fieldroundSelector, fieldCountcolumn)
     const dispatch = useDispatch()
 
     const cashOut = () => {

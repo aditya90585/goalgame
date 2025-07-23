@@ -77,7 +77,7 @@ const Mineschanger = () => {
 
                     </div>
                 </div>
-                <div className='bg-[#FFC107] rounded-xl mx-px w-40 flex justify-center items-center text-sm h-5'>Next: {multiplier.toFixed(2)}X</div>
+                <div className='bg-[#FFC107] rounded-xl mx-px w-40 flex justify-center items-center text-sm h-5'>{autogameSelector?"MULTIPLIER":"NEXT"}: {multiplier.toFixed(2)}X</div>
             </div>
         </div>
     )

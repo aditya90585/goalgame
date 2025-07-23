@@ -33,8 +33,22 @@ const Main = () => {
     resetGame();
   }, [fieldCount]);
 
+
+
+
   let safeClickCountauto = useMemo(() => {
-    return selectAutoBoxes.filter(v => v === true).length;
+    if (!Array.isArray(selectAutoBoxes[0])) return 0;
+    let value = 1
+    selectAutoBoxes.forEach((e, index) => {
+      if (!Array.isArray(e)) {
+        return 0;
+      } else if (e.filter(v => v === true).length > 0) {
+        value++
+      }
+
+    })
+
+    return value
   }, [selectAutoBoxes]);
 
   const resetGame = () => {
@@ -73,6 +87,7 @@ const Main = () => {
     dispatch(boxesSet(newBoxes))
     dispatch(revealedFalse())
     dispatch(Setfieldroundselector(0))
+    dispatch(Setfieldroundselector(0))
   }
 
   const selectRandom = () => {
@@ -93,7 +108,7 @@ const Main = () => {
 
         dispatch(revealedOne({ index: fieldroundSelector, index1: random }))
 
-      
+
 
         if (boxes[fieldroundSelector][random] == "mines") {
           let minestapsound = "/sounds/lose.mp3"
@@ -101,10 +116,6 @@ const Main = () => {
           if (soundSelector) {
             audio.play()
           }
-
-          // const revealall = Array(5 * 5).fill("true")
-          // setRevealed(revealall)
-
           dispatch(revealAll())
           // handleFlip(dispatch)
           dispatch(togglefooter(false))
@@ -143,44 +154,35 @@ const Main = () => {
           }
 
         }
-        // if (boxes[random] == "mines") {
-        //   let minestapsound = "/sounds/lose.mp3"
-        //   let audio = new Audio(minestapsound)
-        //   if (soundSelector) {
-        //     audio.play()
-        //   }
-        //   dispatch(revealAll())
-        //   handleFlip(dispatch)
-        //   dispatch(togglefooter(false))
-        //   dispatch(togglemain(true))
-        //   dispatch(SetbetState(!betState))
-        // } else {
-        //   let minestapsound = "/sounds/star-click.mp3"
-        //   let audio = new Audio(minestapsound)
-        //   if (soundSelector) {
-        //     audio.play()
-        //   }
-        // }
+
       }
       else {
         selectRandom()
       }
     }
     if (footerselector && autogameSelector) {
-      const random = Math.floor(Math.random() * 25)
-      if (selectAutoBoxes[random] == false) {
-        let minestapsound = "/sounds/star-click.mp3"
-        let audio = new Audio(minestapsound)
-        if (soundSelector) {
-          audio.play()
-        }
-        if (25 - minesCount > safeClickCountauto) {
-          dispatch(selectAutoOne(random))
-        }
+      let random
+      if (fieldCount == "small") {
+        random = Math.floor(Math.random() * 3);
+      } else if (fieldCount == "medium") {
+        random = Math.floor(Math.random() * 4);
+      } else if (fieldCount == "large") {
+        random = Math.floor(Math.random() * 5);
       }
-      else {
-        selectRandom()
+
+      if ((fieldroundSelector) < fieldCountcolumn) {
+        if (selectAutoBoxes[fieldroundSelector][random] == false) {
+          let minestapsound = "/sounds/star-click.mp3"
+          let audio = new Audio(minestapsound)
+          if (soundSelector) {
+            audio.play()
+          }
+          dispatch(selectAutoOne({ index: fieldroundSelector, index1: random }))
+          dispatch(Setfieldroundselector(fieldroundSelector + 1))
+        }
+
       }
+
     }
   }
 
@@ -204,15 +206,16 @@ const Main = () => {
 
 
   useEffect(() => {
-    if (!autogameSelector) {
+    if (autogameSelector == false) {
       const newMultiplier = calculateSpribeMultiplier(fieldroundSelector + 1, fieldCountcolumn);
       dispatch(setMultiplier(newMultiplier));
     } else {
-      const newMultiplier = calculateSpribeMultiplier(safeClickCountauto, fieldCount);
+
+      const newMultiplier = calculateSpribeMultiplier(safeClickCountauto - 1, fieldCountcolumn);
       dispatch(setMultiplier(newMultiplier));
     }
 
-  }, [safeClickCount, fieldCount, fieldroundSelector, fieldCountcolumn, flipTrigger, safeClickCountauto])
+  }, [safeClickCount, autogameSelector, fieldCount, fieldroundSelector, fieldCountcolumn, flipTrigger, safeClickCountauto])
 
 
   return (

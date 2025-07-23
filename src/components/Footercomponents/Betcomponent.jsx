@@ -57,6 +57,7 @@ const Betcomponent = () => {
        dispatch(boxesSet(newBoxes))
        dispatch(revealedFalse())
        dispatch(Setfieldroundselector(0))
+        dispatch(Setfieldroundselector(0))
      }
     const bet = (e) => {
         dispatch(togglehowtoplay(false))

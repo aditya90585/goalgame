@@ -11,10 +11,10 @@ const Howtoplay = () => {
           <div className=' flex justify-between items-center text-white m-4'><span className='font-semibold font-sans'>How To Play</span>
             <span onClick={() => dispatch(togglehowtoplay(false))} className='rounded-full cursor-pointer flex bg-[#373E48] p-0.5 inset-shadow-[0.4px_0.4px_0.8px_white]'><RxCross1 className='p-0.5' /></span></div>
           <div className='w-full h-px bg-[#38393C]'></div>
-          <h1 className='font-semibold mt-4 text-2xl text-center text-white'>MINES</h1>
-          <div className='w-full flex justify-center my-10'><img className='w-50' src="/images/how-mines.png" alt="how-to-play" /></div>
-          <div className='text-center text-white'>Each tile hides either a star or a mine</div>
-          <div className='text-center text-white mx-5 mt-2'>Increase the total number of stars for bigger odds and higher rewards. You can cash out after each turn, or try for increased winnings.</div>
+          <h1 className='font-semibold mt-4 text-2xl text-center text-white'>GOAL</h1>
+          <div className='w-full flex justify-center my-10'><img className='w-[95%]' src="/images/how-goal.png" alt="how-to-play" /></div>
+          <div className='text-center text-white'>Each column is a step towards the goal, but each also hides a mine.</div>
+          <div className='text-center text-white mx-5 mt-2'>Avoid the mines and increase your winnings with each step. Change the field size for better odds, and cash out at any time.</div>
         </div>
   )
 }

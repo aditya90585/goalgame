@@ -29,9 +29,9 @@
 }
 
 .grad-auto {
-  background-image: linear-gradient(#065004,#266E0B);
-  border-color: #56BB41;
-   box-shadow: 0 4px 1px #093866;
+  background-image: linear-gradient(#B7868A,#D2A1A6);
+  border-color: #FFC0C4;
+   box-shadow: 0 4px 1px #764045;
 }
 .gradcircle-auto {
   background-image: linear-gradient(#3A832B, #39952B);

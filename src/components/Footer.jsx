@@ -3,7 +3,7 @@ import { store } from '../app/store.js'
 import { handleFlip } from '../utils/handleFlip'
 import { calculateSpribeMultiplier } from '../utils/multiplier'
 import { useSelector, useDispatch } from 'react-redux'
-import { addfixBet, toggleMenu, togglehowtoplay, triggerFlip, resetFlip, betAmt, boxesSet, cashOutbetamount, changefixbettomin, changebetFix, changebetValue, clearCashoutNotification, fixBets, revealedFalse, setcashOutamount, setCashoutNotification, setNavcashout, togglefooter, togglemain, revealAll, toggleStartAutoGameSelector, SetautoGameRound, revealedOne, toggleAutoGame, SetbetState, SetautorevealState, Setautogamingstate, SetroundLeft, SetstopGamestate } from '../features/mines/mineSlices'
+import { addfixBet, toggleMenu, togglehowtoplay, triggerFlip, Setfieldroundselector, SetfieldCountcolumn, resetFlip, betAmt, boxesSet, cashOutbetamount, changefixbettomin, changebetFix, changebetValue, clearCashoutNotification, fixBets, revealedFalse, setcashOutamount, setCashoutNotification, setNavcashout, togglefooter, togglemain, revealAll, toggleStartAutoGameSelector, SetautoGameRound, revealedOne, toggleAutoGame, SetbetState, SetautorevealState, Setautogamingstate, SetroundLeft, SetstopGamestate, SetselectAutoBoxes } from '../features/mines/mineSlices'
 import { useState, useEffect } from 'react'
 import { CiPlay1 } from "react-icons/ci";
 import { MdOutlineAutorenew } from "react-icons/md";
@@ -38,12 +38,29 @@ const Footer = () => {
     const safeClicks = revealed.filter(val => val === true).length;
     const fieldroundSelector = useSelector(state => state.fieldroundSelector)
     const fieldCountcolumn = useSelector(state => state.fieldCountcolumn)
-    const multiplier = () => calculateSpribeMultiplier(fieldroundSelector,fieldCountcolumn)
+
+    let safeClickCountauto = useMemo(() => {
+        if (!Array.isArray(selectAutoBoxes[0])) return 0;
+        let value = 1
+        selectAutoBoxes.forEach((e, index) => {
+            if (!Array.isArray(e)) {
+                return 0;
+            } else if (e.filter(v => v === true).length > 0) {
+                value++
+            }
+
+        })
+        return value
+    }, [selectAutoBoxes]);
+
+    const multiplier = () => calculateSpribeMultiplier(fieldroundSelector, fieldCountcolumn)
+    const multiplier2 = () => calculateSpribeMultiplier(safeClickCountauto, fieldCountcolumn)
     const autogamemultiplier = useSelector(state => state.multiplier)
+
 
     useEffect(() => {
         dispatch(setcashOutamount(multiplier()))
-    }, [fieldroundSelector, fieldCount])
+    }, [fieldCountcolumn, safeClickCountauto, fieldroundSelector])
 
     useEffect(() => {
         boxesRef.current = boxes;
@@ -59,24 +76,52 @@ const Footer = () => {
         stopGamestateRef.current = stopGamesstate;
     }, [stopGamesstate]);
 
-    const safeClickCountauto = useMemo(() => {
-        return selectAutoBoxes.filter(v => v === true).length;
-    }, [selectAutoBoxes]);
+
+
+
+    // const safeClickCountauto = useMemo(() => {
+    //     if (!Array.isArray(selectAutoBoxes[0])) return 0;
+    //     return selectAutoBoxes[0].filter(v => v === true).length;
+    // }, [selectAutoBoxes]);
+
 
     const resetGame = () => {
-        const newBoxes = Array(5 * 5).fill("safe")
-        let index = 0
-        while (index < minesCount) {
-            const random = Math.floor(Math.random() * newBoxes.length)
-            if (newBoxes[random] !== "mines") {
-                newBoxes[random] = "mines"
-                index++
+        let newBoxes
+        if (fieldCount === "small") {
+            newBoxes = Array.from({ length: 4 }, () => Array(3).fill("safe"));
+
+            let index = 0;
+            while (index < 4) {
+                const random = Math.floor(Math.random() * 3);
+                newBoxes[index][random] = "mines";
+                index++;
+            }
+        } else if (fieldCount === "medium") {
+            newBoxes = Array.from({ length: 7 }, () => Array(4).fill("safe"));
+
+            let index = 0;
+            while (index < 7) {
+                const random = Math.floor(Math.random() * 4);
+                newBoxes[index][random] = "mines";
+                index++;
+            }
+        } else if (fieldCount === "large") {
+            newBoxes = Array.from({ length: 10 }, () => Array(5).fill("safe"));
+
+            let index = 0;
+            while (index < 10) {
+                const random = Math.floor(Math.random() * 5);
+                newBoxes[index][random] = "mines";
+                index++;
             }
         }
+
+
         dispatch(togglemain(true))
         dispatch(boxesSet(newBoxes))
         dispatch(revealedFalse())
-        // setRevealed(Array(5 * 5).fill(false))
+        dispatch(Setfieldroundselector(0))
+
     }
 
     useEffect(() => {
@@ -128,15 +173,17 @@ const Footer = () => {
             setTimeout(() => {
                 dispatch(SetautorevealState(true))
                 let isLoss = false;
-                for (let index = 0; index < 25; index++) {
-                    if (selectAutoBoxes[index] == true) {
-                        dispatch(SetautorevealState(true))
-                        dispatch(revealedOne(index))
-                        handleFlip(dispatch)
-                        dispatch(revealAll())
+                for (let index1 = 0; index1 < fieldCountcolumn; index1++) {
+                    for (let index = 0; index < 4; index++) {
+                        if (selectAutoBoxes[index1][index] == true) {
+                            dispatch(SetautorevealState(true))
+                            dispatch(revealedOne({ index1: index, index: index1 }))
+                            handleFlip(dispatch)
 
-                        if (boxesRef.current[index] === "mines") {
-                            isLoss = true;
+
+                            if (boxesRef.current[index1][index] === "mines") {
+                                isLoss = true;
+                            }
                         }
                     }
                 }
