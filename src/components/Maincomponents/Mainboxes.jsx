@@ -117,9 +117,9 @@ const Mainboxes = () => {
 
 
     return (
-        <div className={`md:w-2/4 w-[90%] mt-4 md:h-full  h-70  bg-[#417615] rounded-2xl flex justify-center md:gap-x-1 gap-x-1 items-center ${((mainselector && autogameSelector == false) || autogamingstate) ? "disable-main" : ""}`}>
+        <div className={`md:w-2/4 w-[96%] mt-4 md:h-full  h-60  bg-[#417615] rounded-2xl flex justify-center md:gap-x-1 gap-x-1 items-center ${((mainselector && autogameSelector == false) || autogamingstate) ? "disable-main" : ""}`}>
             {boxes.map((box1, index1) => {
-                return <div key={index1} className={`h-full w-full flex justify-center items-center flex-col md:gap-x-1 md:gap-y-2 gap-x-0.5 gap-y-0.5  `}>
+                return <div key={index1} className={`h-full w-full flex justify-center items-center flex-col md:gap-x-1 md:gap-y-2 gap-x-0.5 gap-y-1  `}>
 
                     {/* ${(footerselector && autogameSelector == false) ? revealed[index] ? "grad2" : "grad-dark" : "grad"}
              ${flipTrigger && revealed[index] ? "animate-flip" : ""}
